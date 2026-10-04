@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spring-config
+data:
+  DB_URL: "jdbc:mysql://mysql-service:3306/memberdb"
+  DB_USERNAME: "springuser"
