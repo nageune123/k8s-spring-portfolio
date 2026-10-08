@@ -104,6 +104,25 @@ Deployment에서는 `configMapKeyRef`와 `secretKeyRef`를 사용하여 설정�
 | MySQL 8     | 애플리케이션 데이터베이스                 |
 | Linux / WSL | Kubernetes 실습 및 명령어 실행 환경       |
 
+## CI/CD
+
+GitHub Actions를 이용하여 Spring Boot 애플리케이션의 CI/CD 파이프라인을 구성했습니다.
+
+```text
+Git Push
+   ↓
+GitHub Actions
+   ↓
+Gradle Build & Test
+   ↓
+Docker Image Build
+   ↓
+GHCR Push
+   ↓
+Self-hosted Runner
+   ↓
+Kubernetes Rolling Update
+```
 ## Troubleshooting
 
 | Problem                                            | Diagnosis                                                                         | Resolution                                                         |
@@ -112,6 +131,7 @@ Deployment에서는 `configMapKeyRef`와 `secretKeyRef`를 사용하여 설정�
 | Liveness Probe 실패로 컨테이너가 반복 재시작됨     | `kubectl get pods`에서 RESTARTS 증가 및 Probe 실패 확인                           | Liveness Probe 경로를 `/docker-test`로 수정하여 재시작 문제 해결   |
 | Service가 Spring Pod와 연결되지 않음               | Service Selector와 Pod Label을 비교하고 EndpointSlice에서 Endpoint 연결 상태 확인 | Selector와 Label을 일치시켜 Service 연결 복구                      |
 | MySQL Pod 재생성 과정에서 Spring DB 연결 경고 발생 | Spring 로그에서 Hikari DB Connection 관련 경고 확인                               | MySQL Pod 재생성 후 `mysql-service`를 통한 DB 연결 복구 확인       |
+| CI/CD 배포 중 Kubernetes Rolling Update Timeout 발생 | `kubectl describe pod`와 이전 컨테이너 로그를 확인하여 Spring Boot 기동 전에 Liveness Probe가 실행되어 컨테이너가 재시작되는 원인 확인 | `startupProbe`를 추가하여 애플리케이션 기동 시간을 확보하고 재배포하여 정상 Rolling Update 확인 |
 
 ## Security
 
